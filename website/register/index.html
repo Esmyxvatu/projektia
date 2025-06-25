@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Projektia - Register</title>
+        <link rel="icon" href="favicon.svg">
+
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+        <script src="/static/phrases.js"></script>
+    </head>
+    <body class="bg-gray-900">
+        <div class="flex h-screen">
+            <main class="w-full p-4 items-center flex justify-center">
+                <div class="w-1/3 bg-gray-800 mt-12 p-4 rounded-md">
+                    <div class="flex flex-col space-y-2" id="login_form">
+                        <input class="bg-gray-800 border-b-2 border-gray-600 hover:border-green-600 focus:border-green-600 outline-none p-2 text-white transition-colors duration-300" type="text" id="username" placeholder="Username">
+                        <input class="bg-gray-800 border-b-2 border-gray-600 hover:border-green-600 focus:border-green-600 outline-none p-2 text-white transition-colors duration-300" type="password" id="password" placeholder="Password">
+                        <input class="bg-gray-800 border-b-2 border-gray-600 hover:border-green-600 focus:border-green-600 outline-none p-2 text-white transition-colors duration-300" type="password" id="password2" placeholder="Confirm password">
+
+                        <input class="bg-gray-800 border-b-2 border-gray-600 hover:border-green-600 focus:border-green-600 outline-none p-2 text-white transition-colors duration-300" type="text" id="q" placeholder="Question to recover password">
+                        <input class="bg-gray-800 border-b-2 border-gray-600 hover:border-green-600 focus:border-green-600 outline-none p-2 text-white transition-colors duration-300" type="text" id="a" placeholder="Answer to the question">
+
+                        <button class="bg-gray-700 text-white rounded p-2 hover:bg-green-600 transition-colors duration-300 flex items-center space-x-2 hover:text-red-white" onclick="Register(event)">
+                            <i data-lucide="user-plus" class="mr-4"></i>
+                            Register
+                        </button>
+                        <a href="/login" class="bg-gray-700 text-white rounded p-2 hover:bg-blue-600 transition-colors duration-300 flex items-center space-x-2 hover:text-red-white">
+                            <i data-lucide="key" class="mr-4"></i>
+                            Login
+                        </a>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Banderole d'informations (erreurs ou succes)-->
+        <div class="absolute bottom-0 right-0 left-0 p-4 flex transition-colors duration-300 hidden" onclick="HideForms(event)" id="info">
+            <h1 class="text-white font-bold" style="font-size: 1.5rem;" id="info_type">Error:</h1>
+            <p class="text-gray-300 rounded ml-2 p-2 flex items-center space-x-2" id="info_text">Missing name</p>
+        </div>
+
+        <!-- Banderole d'encouragement -->
+        <div class="absolute top-0 right-0 left-0 p-4 bg-blue-600 flex transition-colors duration-300" id="encouragement">
+            <p class="text-blue-300 rounded-lg ml-2 items-center space-x-2" id="warning_text" style="font-size: small; font-weight: bold;">You're making progress every day, even if it doesn't always feel like it. Keep going, you're closer than you think!</p>
+        </div>
+
+        <script>lucide.createIcons();</script>
+        <script src="script.js"></script>
+    </body>
+</html>

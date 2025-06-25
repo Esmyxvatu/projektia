@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Projektia - Admin</title>
+        <link rel="icon" href="favicon.svg">
+
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+        <script src="/static/phrases.js"></script>
+    </head>
+    <body class="bg-gray-900">
+        <div class="flex h-screen overflow-hidden">
+            <nav class="w-64 bg-gray-800 h-full mt-12 flex flex-col">
+                <div class="flex items-center px-4 py-2 text-white gap-2 hover:bg-gray-700 transition-colors duration-300 cursor-pointer hover:text-green-500" onclick="Show('home')" id="home_div">
+                    <i data-lucide="home"></i>
+                    <p class="text-2xl font-bold" style="font-family:monospace">Home</p>
+                </div>
+
+                <div class="flex items-center px-4 py-2 text-white gap-2 hover:bg-gray-700 transition-colors duration-300 cursor-pointer hover:text-green-500" onclick="Show('log')" id="log_div">
+                    <i data-lucide="file-clock"></i>
+                    <p class="text-2xl font-bold" style="font-family:monospace">Log</p>
+                </div>
+
+                <ul class="p-4 space-y-2" id="users"></ul>
+            </nav>
+        </div>
+
+        <div id="fdpmarcheenculédetesgrandsmorts">
+            <div id="log" class="hidden p-2 fixed top-12 left-64 right-0 bottom-0 my-4 gap-2 flex flex-col">
+                <div class="flex gap-2" id="log_filter_div">
+                    <select class="bg-gray-800 w-full rounded p-2 text-white outline-none ring-2 ring-gray-700 focus:ring-green-600 transition-colors duration-300 hover:ring-green-600" id="log_filter" onchange="document.getElementById('log_text').innerHTML = logs[event.target.value]"></select>
+                </div>
+                <label for="log_text" class="text-white flex items-center">
+                    <i data-lucide="arrow-left"   class="rounded px-1 mx-1 bg-gray-700 text-white cursor-pointer hover:bg-green-600 transition-colors duration-300" onclick="BackLog()" id="bl"></i>
+                    <i data-lucide="arrow-right"  class="rounded px-1 mx-1 bg-gray-700 text-white cursor-pointer hover:bg-green-600 transition-colors duration-300" onclick="NextLog()" id="nl"></i>
+                    <i data-lucide="refresh-cw"   class="rounded px-1 mx-1 bg-gray-700 text-white cursor-pointer hover:bg-green-600 transition-colors duration-300" onclick="Refresh()"></i>
+                    Log:
+                </label>
+                <div class="bg-gray-800 rounded p-2 text-white outline-none ring-2 ring-gray-700 focus:ring-green-600 transition-colors duration-300 hover:ring-green-600 h-full" id="log_text" style="font-family:monospace;  overflow-y: scroll;"></div>
+            </div>
+            <div id="home" class="hidden p-2 fixed top-12 left-64 right-0 bottom-0 my-4 gap-2 flex flex-col">
+                <h1 class="text-white font-bold" style="font-size: 1.5rem;" id="home_title">Welcome to the admin panel</h1>
+                <p class="text-gray-300 rounded ml-2 flex font-bold items-center space-x-2" id="home_text" >Different ip addresses connected : 0</p>
+                <p class="text-gray-300 rounded ml-2 flex font-bold items-center space-x-2" id="home_text2">Online users : 0</p>                  <!-- User online count -->
+                <p class="text-gray-300 rounded ml-2 flex font-bold items-center space-x-2" id="home_text3">Total users : 0</p>                   <!-- Total user count -->
+                <p class="text-gray-300 rounded ml-2 flex font-bold items-center space-x-2" id="home_text4">Total projects : 0</p>                <!-- Total project count -->
+                <p class="text-gray-300 rounded ml-2 flex font-bold items-center space-x-2" id="home_text5">Total launches : 0</p>                <!-- Total launch count -->
+                <p class="text-gray-300 rounded ml-2 flex font-bold items-center space-x-2" id="home_text6">Size of account.json : 0 KB</p>       <!-- Account size -->
+                <p class="text-gray-300 rounded ml-2 flex font-bold items-center space-x-2" id="home_text7">Size of logs : 0 KB</p>               <!-- Logs size -->
+                <p class="text-gray-300 rounded ml-2 flex font-bold items-center space-x-2" id="home_text8">Size of projects.json : 0 KB</p>      <!-- Projects size -->
+
+                <button class="bg-gray-700 text-white rounded p-2 hover:bg-green-600 transition-colors duration-300 flex items-center space-x-2 justify-center mt-4" onclick="Refresh()">
+                    <i data-lucide="refresh-cw" class="mr-4"></i>
+                    Refresh
+                </button>
+                <button class="bg-gray-700 text-white rounded p-2 hover:bg-blue-600 transition-colors duration-300 flex items-center space-x-2 justify-center" onclick="location.href='/'">
+                    <i data-lucide="globe" class="mr-4"></i>
+                    Website
+                </button>
+                <button class="bg-gray-700 text-white rounded p-2 hover:bg-red-600 transition-colors duration-300 flex items-center space-x-2 justify-center" onclick="Logout()">
+                    <i data-lucide="log-out" class="mr-4"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Banderole d'informations (erreurs ou succes)-->
+        <div class="absolute bottom-0 right-0 left-0 p-4 flex transition-colors duration-300 hidden" onclick="HideForms(event)" id="info">
+            <h1 class="text-white font-bold" style="font-size: 1.5rem;" id="info_type">Error:</h1>
+            <p class="text-gray-300 rounded ml-2 p-2 flex items-center space-x-2" id="info_text">Missing name</p>
+        </div>
+
+        <!-- Banderole d'encouragement -->
+        <div class="absolute top-0 right-0 left-0 p-4 bg-blue-600 flex transition-colors duration-300" id="encouragement">
+            <p class="text-blue-300 rounded-lg ml-2 items-center space-x-2" id="warning_text" style="font-size: small; font-weight: bold;">You're making progress every day, even if it doesn't always feel like it. Keep going, you're closer than you think!</p>
+        </div>
+
+        <script>lucide.createIcons();</script>
+        <script src="script.js"></script>
+    </body>
+</html>

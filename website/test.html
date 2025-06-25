@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cryptage avec CryptoJS</title>
+
+    <style>
+        body {
+            font-family: "JetBrains Mono", monospace;
+            margin: 20px;
+
+            background-color: #0f0818;
+            color: #b3b3b3;
+        }
+
+        textarea {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 16px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+            width: 100%;
+            max-width: 500px;
+
+            background-color: #0f0818;
+            color: #fff;
+        }
+
+        button {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 16px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #24113b;
+            color: #ddd;
+
+            transition: all 0.2s ease-in-out;
+
+            &:hover {
+                scale: 0.9;
+                background-color: #1c0e2e;
+                color: #ccc;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Cryptage avec CryptoJS</h1>
+    <textarea id="input" placeholder="Entrez du texte à crypter" rows="4" cols="50"></textarea><br>
+    <button onclick="encryptText()">Crypter</button>
+    <button onclick="decryptText()">Décrypter</button>
+    <button onclick="generateMdp()">Générer un mot de passe</button><br>
+    <p>Texte crypté : <span id="encryptedText"></span></p>
+    <p>Texte décrypté : <span id="decryptedText"></span></p>
+    <p>Mot de passe : <span id="mdp"></span></p>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        const secretKey = '_ci%wu$?prNRt'; // i}h_]H/avn0@%
+
+        function encryptText() {
+            const text = document.getElementById('input').value;
+            const encrypted = CryptoJS.AES.encrypt(text, secretKey).toString();
+            document.getElementById('encryptedText').textContent = encrypted;
+        }
+
+        function decryptText() {
+            const encryptedText = document.getElementById('input').value;
+            const bytes = CryptoJS.AES.decrypt(encryptedText, secretKey);
+            const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+            document.getElementById('decryptedText').textContent = decrypted;
+        }
+
+        function generateMdp() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&%$#@!?^*;:[]{}/\\=+-_µ£$§°';
+            let password = '';
+            for (let i = 0; i < 13; i++) {
+                password += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            document.getElementById('mdp').textContent = password;
+        }
+    </script>
+</body>
+
+</html>
